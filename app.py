@@ -15,9 +15,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] 			= 'sqlite:///data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']    = False
 app.config['JWT_EXPIRATION_DELTA'] 				= timedelta(seconds =1800)
 
-@app.before_first_request
-def create_tables():
-	db.create_all()
+
 
 api.add_resource(Item, '/items/<string:name>')
 api.add_resource(ItemList, '/itemlist')
