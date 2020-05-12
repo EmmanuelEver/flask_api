@@ -10,7 +10,6 @@ from blacklist import BLACKLIST
 from flask_cors import CORS, cross_origin
 
 app  			 = Flask(__name__)
-CORS(app)
 app.secret_key	 = "dalbong"
 api 		     = Api(app)
 app.config['SQLALCHEMY_DATABASE_URI'] 			= os.environ.get('DATABASE_URL', 'sqlite:///data.db')
@@ -18,8 +17,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS']    = False
 app.config['JWT_EXPIRATION_DELTA'] 				= timedelta(seconds =100)
 app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
-
 jwt 		     = JWTManager(app)
+cors = CORS(app, resources={r"*": {"origins": "*"}})
 
 
 @jwt.user_claims_loader
