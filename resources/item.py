@@ -1,6 +1,13 @@
 from flask_restful import Resource,reqparse
-from flask_jwt import jwt_required
+from flask_jwt_extended import (
+			jwt_required,
+			get_jwt_claims,
+			get_jwt_identity,
+	   		jwt_optional,
+		    fresh_jwt_required
+	    )
 from models.item import ItemModel
+from models.user import UserModel
 
 
 
@@ -28,14 +35,18 @@ class Item(Resource):
 
 
 
-	@jwt_required()
+	@jwt_optional
 	def get(self, name):
+		user = get_jwt_identity()
 		item = ItemModel.find_name(name)
-		if item:
-			return item.json(), 200
-		return {"message" : "item not found"}, 402
+		if user:
+			print(user)
+			if item:
+				return item.json(), 200
+			return {"message" : "item not found"}, 402
+		return {"item" : item.name}
 
-	@jwt_required()
+	@fresh_jwt_required
 	def post(self,name):
 		item = ItemModel.find_name(name)
 		if item:
@@ -47,13 +58,16 @@ class Item(Resource):
 		except:
 			return {'message' : 'Sorry, and error appeared on our part'}, 500
 		return item.json(), 201
-
+		
+	@fresh_jwt_required
 	def delete(self, name):
 		item = ItemModel.find_name(name)
 		if item:
 			item.delete_from_db()
+			return{"message" : "Item succesfully deleted"}
 		return {f'message': 'No such {name} item in the database'}
 
+	@fresh_jwt_required
 	def put(self, name):
 		data = Item.parser.parse_args()
 		item = ItemModel.find_name(name)
@@ -73,6 +87,11 @@ class Item(Resource):
 				return {'message' : 'Sorry, and error appeared on our part'}, 500
 
 class ItemList(Resource):
-	@jwt_required()
+
+	@jwt_optional
 	def get(self):
-		return {"items" :[x.json() for x in ItemModel.query.all()]}
+		user = get_jwt_identity()
+		items = [item.json() for item in ItemModel.query.all()]
+		if user:
+			return {"items" : items}, 200
+		return {"items" :[item["name"] for item in items], "message" : "Log in to see more details"}
