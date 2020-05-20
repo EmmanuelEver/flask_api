@@ -69,7 +69,8 @@ class UserLogin(Resource):
 				refresh_token = create_refresh_token(user.id)
 				return {
 						"access_token" : access_token,
-						"refresh_token" : refresh_token
+						"refresh_token" : refresh_token,
+						"user_id"		:user.id
 					}, 201
 
 			return {"message":"Invalid Crederntials"}, 401
