@@ -100,6 +100,6 @@ class UserList(Resource):
 	def get(self):
 		user = get_jwt_identity()
 		if user:
-			users = [user.json() for user in UserModel.query.All()]
+			users = [user.json() for user in UserModel.query.all()]
 			return {"users", users},200
 		return {"message" : "Please login to see details"}
