@@ -43,11 +43,12 @@ class Register(Resource):
 
 class User(Resource):
 
-	@jwt_required
 	@classmethod
+	@jwt_required
 	def get(cls, user_id):
+		user_identity = get_jwt_identity
 		user = UserModel.check_id(user_id)
-		if user:
+		if user and user_identity:
 			return user.json()
 		return {"message" : "Sorry, User not found"}
 
@@ -85,7 +86,7 @@ class UserLogout(Resource):
 			jti = get_raw_jwt()['jti']
 			BLACKLIST.add(jti)
 			return {
-				"message" : "User succesfully logged out", "blacklist" : BLACKLIST
+				"message" : "User succesfully logged out"
 			}, 201
 
 class TokenRefresh(Resource):
