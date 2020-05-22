@@ -97,7 +97,7 @@ class TokenRefresh(Resource):
 
 class UserList(Resource):
 	@jwt_required
-	def get():
+	def get(self):
 		user = get_jwt_identity()
 		if user:
 			users = [user.json() for user in UserModel.query.All()]
