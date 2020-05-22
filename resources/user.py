@@ -95,3 +95,11 @@ class TokenRefresh(Resource):
 			"access_token" : new_token
 		}, 200
 
+class UserList(Resource):
+	@jwt_required
+	def get():
+		user = get_jwt_identity()
+		if user:
+			users = [user.json() for user in UserModel.query.All()]
+			return {"users", users},200
+		return {"message" : "Please login to see details"}
