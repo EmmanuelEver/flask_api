@@ -70,9 +70,10 @@ class UserLogin(Resource):
 				access_token = create_access_token(identity=user.id, fresh = True)
 				refresh_token = create_refresh_token(user.id)
 				return {
-						"access_token" : access_token,
+						"access_token"  : access_token,
 						"refresh_token" : refresh_token,
-						"user_id"		:user.id
+						"user_id"		: user.id,
+						"user"			: user.username
 					}, 201
 
 			return {"message":"Invalid Crederntials"}, 401
